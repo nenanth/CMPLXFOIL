@@ -33,27 +33,30 @@ from . import libxlight_cs as xfoil_cs
 
 
 class xfoilAnalysis:
-    def __init__(self, airfoil_file, re=1e5, mach=0.0, iter=50):  # noqa: A002
-        try:
-            f = open(airfoil_file, "r")
-        except OSError:
-            raise OSError("There was an error opening the airfoil file %s" % (airfoil_file))
-        # end if
+    def __init__(self, airfoil_file=None, xy=None, re=1e5, mach=0.0, iter=50):  # noqa: A002
 
         self.re = re
         self.mach = mach
         self.iter = iter
 
-        # Read the airfoil file
-        x = []
-        y = []
-        for line in f:
-            x.append(float(line.split()[0]))
-            y.append(float(line.split()[1]))
-        # end if
-        self.x = np.array(x)
-        self.y = np.array(y)
+        if airfoil_file is not None:
+            f = open(airfoil_file, "r")
 
+        # Read the airfoil file
+            x = []
+            y = []
+            for line in f:
+                x.append(float(line.split()[0]))
+                y.append(float(line.split()[1]))
+        # end if
+            self.x = np.array(x)
+            self.y = np.array(y)
+
+        elif xy is not None:
+            self.x = xy[:,0]
+            self.y = xy[:,1]
+        else:
+            raise OSError("There was an error opening the airfoil file %s" % (airfoil_file))
         self.setCoordinates(self.x, self.y)
         self.setCoordinatesComplex(self.x, self.y)
 
